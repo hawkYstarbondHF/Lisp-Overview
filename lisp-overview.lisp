@@ -62,8 +62,9 @@
 ;;; 
 ;;; where XXX is the resulting sum.
 (defun exercise1 ()
-    ;; TODO: Write according to the specification above.
-    nil)
+    (format t "The sum is: ~D" (limited-sum 200 1287))
+    (terpri)
+    )
 
 ;;; This function must recursively compute the sum of items divisible
 ;;; by 13 between s and e inclusive, as described in the comment above.
@@ -73,8 +74,19 @@
 ;;; DO NOT USE THE FOLLOWING: setf, setq, defvar, defparameter, or anything that
 ;;;                           sets/changes a variable. Also do not use any loops.
 (defun limited-sum (s e) 
-    ;; TODO: Write according to the specification above.
-    nil)    ; TODO: Change return value
+;; Recursively -> start at s and go to e
+;; Each recursive call is s+13 or something similar
+    (if (= 0 (mod s 13))
+        (if (= s e)
+            (+ e) ;; last call
+            (if (< s e)
+                (+ s (limited-sum (+ s 13) e))
+                ()
+            )
+        )
+        (+ (limited-sum (+ s (- 13 (mod s 13))) e))
+    )
+    )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -103,18 +115,28 @@
     (progn
         ;; TODO: Uncomment the commented lines below to test your completed function.
         ;;       Turn in your code with these lines uncommented.
-        ;(princ (first-longer-shorter "Hello" "Bye"))    ; princ prints a string to the console
+        (princ (first-longer-shorter "Hello" "Bye"))    ; princ prints a string to the console
         (terpri)                      
-        ;(princ (first-longer-shorter "Bye" "Hello"))            
+        (princ (first-longer-shorter "Bye" "Hello"))            
         (terpri)
-        ;(princ (first-longer-shorter "1" "abc"))
+        (princ (first-longer-shorter "1" "abc"))
         (terpri)
-        ;(princ (first-longer-shorter "abc" "1"))
+        (princ (first-longer-shorter "abc" "1"))
         (terpri)
-        ;(princ (first-longer-shorter "abc" "123"))
+        (princ (first-longer-shorter "abc" "123"))
         (terpri)
-        ;(princ (first-longer-shorter "123" "abc")) 
+        (princ (first-longer-shorter "123" "abc")) 
         (terpri) ) ) 
+
+(defun first-longer-shorter (s1 s2)
+    (if (or (= 0 (length s1))
+            (= 0 (length s2)) )
+        (error "ERROR")
+        (if (>= (length s1) (length s2))
+            (format t "~D~D " (char s1 0) (char s2 0))
+            (format t "~D~D " (char s2 0) (char s1 0))
+        )
+    ) )
 	
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
