@@ -31,7 +31,7 @@
 
 ;;; Prints a dividing line between each exercise.
 ;;; exercise-number = Problem number printed in output
-(defun print-divider (exercise-number)
+(defun print-divider (exercise-number) ;; IGNORE
     (progn
         ;; format is similar to Java's System.out.printf, but uses very different format codes
         (format t "--Exercise ~D----------------------------------" exercise-number)
@@ -61,7 +61,7 @@
 ;;; The sum is: XXX
 ;;; 
 ;;; where XXX is the resulting sum.
-(defun exercise1 ()
+(defun exercise1 () ;; DONE
     (format t "The sum is: ~D" (limited-sum 200 1287))
     (terpri)
     )
@@ -73,7 +73,7 @@
 ;;;
 ;;; DO NOT USE THE FOLLOWING: setf, setq, defvar, defparameter, or anything that
 ;;;                           sets/changes a variable. Also do not use any loops.
-(defun limited-sum (s e) 
+(defun limited-sum (s e) ;; DONE
 ;; Recursively -> start at s and go to e
 ;; Each recursive call is s+13 or something similar
     (if (= 0 (mod s 13))
@@ -111,7 +111,7 @@
 ;;;
 ;;; DO NOT USE THE FOLLOWING: setf, setq, defvar, defparameter, or anything that
 ;;;                           sets/changes a variable.
-(defun exercise2 ()
+(defun exercise2 () ;; "DONE"
     (progn
         ;; TODO: Uncomment the commented lines below to test your completed function.
         ;;       Turn in your code with these lines uncommented.
@@ -128,7 +128,7 @@
         (princ (first-longer-shorter "123" "abc")) 
         (terpri) ) ) 
 
-(defun first-longer-shorter (s1 s2)
+(defun first-longer-shorter (s1 s2) ;; HELP, prints extra "NIL"
     (if (or (= 0 (length s1))
             (= 0 (length s2)) )
         (error "ERROR")
@@ -161,7 +161,7 @@
 ;;;
 ;;; DO NOT USE THE FOLLOWING: setf, setq, defvar, defparameter, or anything that
 ;;;                           sets/changes a variable. Also do not use any loops.
-(defun exercise3 ()
+(defun exercise3 () ;; HELP
     ;; TODO: Call move-to-end as described above and print the result
     nil)
 
@@ -194,19 +194,19 @@
 ;;; are complete, you can uncomment the code in this function to test
 ;;; them. Note that these functions should generate an error
 ;;; for inappropriate inputs.
-(defun exercise4 ()
+(defun exercise4 () ;; PARTIAL
     (progn
         ;; TODO: Uncomment the commented lines below to test your completed functions.
         ;;       Turn in your code with these lines uncommented.
-        ;(format t "~D" (recursive-seq 5))
+        (format t "~D" (recursive-seq 5))
         (terpri)
         ;(format t "~D" (dynamic-seq 5))
         (terpri)
-        ;(format t "~D" (recursive-seq 8))
+        (format t "~D" (recursive-seq 8))
         (terpri)
         ;(format t "~D" (dynamic-seq 8))
         (terpri)
-        ;(format t "~D" (recursive-seq 15))
+        (format t "~D" (recursive-seq 15))
         (terpri)
         ;(format t "~D" (dynamic-seq 15)) 
         (terpri) ) )
@@ -218,8 +218,11 @@
 ;;;
 ;;; DO NOT USE THE FOLLOWING: setf, setq, defvar, defparameter, or anything that
 ;;;                           sets/changes a variable. Also do not use any loops.
-(defun recursive-seq (n)
-    nil) ; TODO Change this
+(defun recursive-seq (n) ;; DONE
+    (if (< n 3)
+        (+ n 1)
+        (+ (recursive-seq (- n 3)) (recursive-seq (- n 1)))
+    ) )   
 
 ;;; Compute the sequence described in the comment for
 ;;; exercise 4 using dynamic programming. This will require
@@ -228,8 +231,11 @@
 ;;; return n-th value in the sequence
 ;;;
 ;;; DO NOT USE RECURSION! You actually WILL need to set variable values.
-(defun dynamic-seq (n)
-    nil) ; TODO Change this
+(defun dynamic-seq (n) ;; HELP
+    (setq aux (make-array '(1 2 3)))
+    (setf (aref aux (+ (- n 3) (- n 1))))
+    
+    () ) 
     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -256,7 +262,7 @@
 ;;;  
 ;;; You may use Lisp's loop construct, or use recursion.
 ;;; You can also set/change the values of variables freely.
-(defun exercise5 ()
+(defun exercise5 () ;; HELP
     ;; TODO: Write according to the specification above.
     nil) ; TODO Change this
 
@@ -272,39 +278,49 @@
 ;;; must be defined on construction. Provide your defstruct command here:
 
 ;;; TODO: defstruct here
+(defstruct employee ;; HELP
+    hourly-rate 
+    (hours 0)
+)
 
 ;;;You must also define several functions that use/access/modify your structure:
 
 ;;; - A function called "work" with an employee and an int parameter that 
 ;;;   increases the number of worked but unpaid hours by the int amount.
 ;;; TODO: params and return value
-(defun work (e hours)
-    ;; TODO: Write according to the specification above.
-    nil) ; TODO Change this
+(defun work (e hours) ;; HELP
+    ; (+ hours)
+    ) ; TODO Change this
 
 ;;; - A function "pay" that resets the unpaid worked hours of an employee 
 ;;;   to 0 and returns the amount the employee should be paid for the 
 ;;;   worked hours (multiply the rate by the hours).
 ;;; TODO: params and return value
-(defun pay (e)
+(defun pay (e) ;; HELP
+    ; (* unpaidhours wage)
+    ; (setq unpaidhours 0)
     ;; TODO: Write according to the specification above.
-    nil) ; TODO Change this
+    ) ; TODO Change this
+
+(defun employee-accumulated-hours (e) ;; HELP
+    ; (unpaidhours)
+    )
 
 ;;; This function tests your data type and the functions above. Uncomment the lines
 ;;; below to test your implementation.
-(defun exercise6 ()
+(defun exercise6 () ;; IGNORE, provided tests
     (progn
         ;; TODO: Uncomment the commented lines below to test your completed struct.
         ;;       Turn in your code with these lines uncommented.
 
         ;; setq assigns a value to a variable.
         ;; make-employee is automatically defined by creating a struct called "employee"
-        ;(setq e1 (make-employee :hourly-rate 8.25))
-        ;(work e1 8)
-        ;(work e1 8)
-        ;(work e1 8)
-        ;(work e1 8)
-        ;(work e1 8)
+        ; (setq e1 (make-employee :hourly-rate 8.25))
+        ; (work e1 8)
+        ; (work e1 8)
+        ; (work e1 8)
+        ; (work e1 8)
+        ; (work e1 8)
         ;(setq hours1 (employee-accumulated-hours e1))
         ;(setq paycheck1 (pay e1))
         ;; The ~$ format code corresponds to a floating point number with two values after the decimal.
@@ -336,7 +352,7 @@
 ;;; certain style warnings. This runs when the script is launched
 ;;; from the command line, but only if "main" is supplied as a 
 ;;; command line parameter.
-(defun main ()
+(defun main () ;; IGNORE
     (progn                  ; progn is for running several commands in sequence
         (print-divider 1)
         (exercise1)
