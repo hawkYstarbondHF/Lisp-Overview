@@ -77,9 +77,9 @@
 ;; Recursively -> start at s and go to e
 ;; Each recursive call is s+13 or something similar
     (if (= 0 (mod s 13))
-        (if (= s e)
+        (if (= s e) ;; base case 1
             (+ e) ;; last call
-            (if (< s e)
+            (if (< s e) ;; only recursively call function while s < e
                 (+ s (limited-sum (+ s 13) e))
                 ()
             )
@@ -133,8 +133,8 @@
             (= 0 (length s2)) )
         (error "ERROR")
         (if (>= (length s1) (length s2))
-            (format t "~D~D " (char s1 0) (char s2 0))
-            (format t "~D~D " (char s2 0) (char s1 0))
+            (format nil "~D~D" (char s1 0) (char s2 0)) ;; "nil" doesn't print string immediately, preserves & returns it at the end of the function
+            (format nil "~D~D" (char s2 0) (char s1 0))
         )
     ) )
 	
@@ -163,8 +163,25 @@
 ;;;                           sets/changes a variable. Also do not use any loops.
 (defun exercise3 () ;; HELP
     ;; TODO: Call move-to-end as described above and print the result
+    (move-to-end '(1 2 3 4 5 6 7 8 9 10) 4)
     nil)
 
+;;; need to use recursion
+(defun move-to-end (lst i)
+    (let* (newlist '()) (item 0)
+        (if (null newlist)
+            (if (= i 0)
+                (cons (cdr newlist) (car newlist))
+                ()
+            )
+            (if (= i ))
+        )
+    )    
+(if (= i )
+        (list '(car lst))
+        ()
+    )
+    )
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Exercise 4: More Recursion
