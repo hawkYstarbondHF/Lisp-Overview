@@ -111,7 +111,7 @@
 ;;;
 ;;; DO NOT USE THE FOLLOWING: setf, setq, defvar, defparameter, or anything that
 ;;;                           sets/changes a variable.
-(defun exercise2 () ;; "DONE"
+(defun exercise2 ()
     (progn
         ;; TODO: Uncomment the commented lines below to test your completed function.
         ;;       Turn in your code with these lines uncommented.
@@ -128,7 +128,7 @@
         (princ (first-longer-shorter "123" "abc")) 
         (terpri) ) ) 
 
-(defun first-longer-shorter (s1 s2) ;; HELP, prints extra "NIL"
+(defun first-longer-shorter (s1 s2)
     (if (or (= 0 (length s1))
             (= 0 (length s2)) )
         (error "ERROR")
@@ -164,24 +164,20 @@
 (defun exercise3 () ;; HELP
     ;; TODO: Call move-to-end as described above and print the result
     (move-to-end '(1 2 3 4 5 6 7 8 9 10) 4)
-    nil)
+    (let ((result (move-to-end '(1 2 3 4 5 6 7 8 9 10) 2)))
+        (format t "~{~a~^, ~}~%" result)
+    )
+    ; nil)
+    
 
-;;; need to use recursion
+
 (defun move-to-end (lst i)
-    (let* (newlist '()) (item 0)
-        (if (null newlist)
-            (if (= i 0)
-                (cons (cdr newlist) (car newlist))
-                ()
-            )
-            (if (= i ))
-        )
-    )    
-(if (= i )
-        (list '(car lst))
-        ()
+    (append ; combine, is a list function
+        (subseq lst 0 i) ; prior to index
+        (subseq lst (1+ i)) ; after index
+        (list (nth i lst)) ; at index
     )
-    )
+)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Exercise 4: More Recursion
@@ -217,15 +213,15 @@
         ;;       Turn in your code with these lines uncommented.
         (format t "~D" (recursive-seq 5))
         (terpri)
-        ;(format t "~D" (dynamic-seq 5))
+        (format t "~D" (dynamic-seq 5))
         (terpri)
         (format t "~D" (recursive-seq 8))
         (terpri)
-        ;(format t "~D" (dynamic-seq 8))
+        (format t "~D" (dynamic-seq 8))
         (terpri)
         (format t "~D" (recursive-seq 15))
         (terpri)
-        ;(format t "~D" (dynamic-seq 15)) 
+        (format t "~D" (dynamic-seq 15)) 
         (terpri) ) )
 	
 ;;; Recursively compute the sequence described in the comment for
@@ -236,10 +232,10 @@
 ;;; DO NOT USE THE FOLLOWING: setf, setq, defvar, defparameter, or anything that
 ;;;                           sets/changes a variable. Also do not use any loops.
 (defun recursive-seq (n) ;; DONE
-    (if (< n 3)
-        (+ n 1)
-        (+ (recursive-seq (- n 3)) (recursive-seq (- n 1)))
-    ) )   
+    (if (< n 3) ; base case
+        (+ n 1) ; value for base cases
+        (+ (recursive-seq (- n 3)) (recursive-seq (- n 1))) ;; 
+    ) )
 
 ;;; Compute the sequence described in the comment for
 ;;; exercise 4 using dynamic programming. This will require
@@ -249,10 +245,22 @@
 ;;;
 ;;; DO NOT USE RECURSION! You actually WILL need to set variable values.
 (defun dynamic-seq (n) ;; HELP
-    (setq aux (make-array '(1 2 3)))
-    (setf (aref aux (+ (- n 3) (- n 1))))
-    
-    () ) 
+    (setq aux (make-array n))
+    (setf (aref aux 0) 1)
+    (setf (aref aux 1) 2)
+    (setf (aref aux 2) 3)
+    (if (> n 2)
+        (progn 
+            (setq index 3)
+            (if (= index n)
+                (setf (aref aux n) (+ (aref aux (- n 3) (aref aux (- n 1)))))
+                (setf (aref aux index) (+ aref aux (- index 3) (aref aux (- index 1))))
+            )
+        )
+        () ;; base cases handled above and below
+    )
+    (aref aux n)
+    )
     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -281,6 +289,10 @@
 ;;; You can also set/change the values of variables freely.
 (defun exercise5 () ;; HELP
     ;; TODO: Write according to the specification above.
+    (with-open-file (stream "numbers.txt")
+        (:if-does-not-exist "The file \"numbers.txt\" does not exist. Exiting.")
+        
+    )
     nil) ; TODO Change this
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
