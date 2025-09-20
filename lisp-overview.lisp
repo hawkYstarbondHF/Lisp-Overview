@@ -76,15 +76,15 @@
 (defun limited-sum (s e) ;; DONE
 ;; Recursively -> start at s and go to e
 ;; Each recursive call is s+13 or something similar
-    (if (= 0 (mod s 13))
-        (if (= s e) ;; base case 1
-            (+ e) ;; last call
-            (if (< s e) ;; only recursively call function while s < e
-                (+ s (limited-sum (+ s 13) e))
-                ()
+    (if (<= s e) ; base guard: only process when start is less than s <= e
+        (if (= 0 (mod s 13)) ; only counts divisible by 13
+            (if (= s e) ;; base case 
+                e ;; last call
+                (+ s (limited-sum (+ s 13) e)) ; recursive call
             )
+            (limited-sum (+ s (- 13 (mod s 13))) e) ; modify s to be the next value divisible by 13
         )
-        (+ (limited-sum (+ s (- 13 (mod s 13))) e))
+        0 ; past the end
     )
     )
 
@@ -164,12 +164,9 @@
 (defun exercise3 () ;; HELP
     ;; TODO: Call move-to-end as described above and print the result
     (move-to-end '(1 2 3 4 5 6 7 8 9 10) 4)
-    (let ((result (move-to-end '(1 2 3 4 5 6 7 8 9 10) 2)))
+    (let ((result (move-to-end '(1 2 3 4 5 6 7 8 9 10) 4)))
         (format t "~{~a~^, ~}~%" result)
-    )
-    ; nil)
-    
-
+    ))
 
 (defun move-to-end (lst i)
     (append ; combine, is a list function
@@ -245,21 +242,27 @@
 ;;;
 ;;; DO NOT USE RECURSION! You actually WILL need to set variable values.
 (defun dynamic-seq (n) ;; HELP
-    (setq aux (make-array n))
-    (setf (aref aux 0) 1)
-    (setf (aref aux 1) 2)
-    (setf (aref aux 2) 3)
-    (if (> n 2)
-        (progn 
-            (setq index 3)
-            (if (= index n)
-                (setf (aref aux n) (+ (aref aux (- n 3) (aref aux (- n 1)))))
-                (setf (aref aux index) (+ aref aux (- index 3) (aref aux (- index 1))))
+    (setf aux (make-array (+ n 1))) ; create array
+    
+    ; fill the array 
+    (if (>= n 0) ; input validation
+        (progn
+            ; base cases
+            (setf (aref aux 0) 1)
+            (when (>= n 1)
+                (setf (aref aux 1) 2) )
+            (when (>= n 2)
+                (setf (aref aux 2) 3) )
+
+            ; rest of the array
+                (loop for i from 3 to n do
+                    (setf (aref aux i) (+ (aref aux (- i 3)) (aref aux (- i 1))))
+                )
             )
+        (error "ERROR")
         )
-        () ;; base cases handled above and below
-    )
-    (aref aux n)
+        ; edge case for invalid negative input
+        (aref aux n)    
     )
     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -289,9 +292,13 @@
 ;;; You can also set/change the values of variables freely.
 (defun exercise5 () ;; HELP
     ;; TODO: Write according to the specification above.
-    (with-open-file (stream "numbers.txt")
-        (:if-does-not-exist "The file \"numbers.txt\" does not exist. Exiting.")
-        
+    ;; safe
+    (if (not (probe-file "numbers.txt")) ;; check if file exists
+        (format t "The file \"numbers.txt\" does not exist. Exiting.~%")
+        (with-open-file (stream "numbers.txt"
+            :direction :input)
+            
+        )
     )
     nil) ; TODO Change this
 
@@ -305,35 +312,29 @@
 ;;; - The number of worked hours that the employee has not been paid for yet.
 ;;; The default number of hours worked should be 0, but the hourly pay
 ;;; must be defined on construction. Provide your defstruct command here:
-
-;;; TODO: defstruct here
-(defstruct employee ;; HELP
+(defstruct employee
     hourly-rate 
-    (hours 0)
+    (accumulated-hours 0) ;; default 
 )
 
-;;;You must also define several functions that use/access/modify your structure:
+;;; You must also define several functions that use/access/modify your structure:
 
 ;;; - A function called "work" with an employee and an int parameter that 
 ;;;   increases the number of worked but unpaid hours by the int amount.
 ;;; TODO: params and return value
-(defun work (e hours) ;; HELP
-    ; (+ hours)
-    ) ; TODO Change this
+(defun work (e hours)
+    (setf (employee-accumulated-hours e) (+ (employee-accumulated-hours e) hours))
+    e)
 
 ;;; - A function "pay" that resets the unpaid worked hours of an employee 
 ;;;   to 0 and returns the amount the employee should be paid for the 
 ;;;   worked hours (multiply the rate by the hours).
 ;;; TODO: params and return value
 (defun pay (e) ;; HELP
-    ; (* unpaidhours wage)
-    ; (setq unpaidhours 0)
+    (setf x (* (employee-accumulated-hours e) (employee-hourly-rate e)))
+    (setf (employee-accumulated-hours e) 0)
     ;; TODO: Write according to the specification above.
-    ) ; TODO Change this
-
-(defun employee-accumulated-hours (e) ;; HELP
-    ; (unpaidhours)
-    )
+    x) ; TODO Change this
 
 ;;; This function tests your data type and the functions above. Uncomment the lines
 ;;; below to test your implementation.
@@ -344,34 +345,34 @@
 
         ;; setq assigns a value to a variable.
         ;; make-employee is automatically defined by creating a struct called "employee"
-        ; (setq e1 (make-employee :hourly-rate 8.25))
-        ; (work e1 8)
-        ; (work e1 8)
-        ; (work e1 8)
-        ; (work e1 8)
-        ; (work e1 8)
-        ;(setq hours1 (employee-accumulated-hours e1))
-        ;(setq paycheck1 (pay e1))
+        (setq e1 (make-employee :hourly-rate 8.25))
+        (work e1 8)
+        (work e1 8)
+        (work e1 8)
+        (work e1 8)
+        (work e1 8)
+        (setq hours1 (employee-accumulated-hours e1))
+        (setq paycheck1 (pay e1))
         ;; The ~$ format code corresponds to a floating point number with two values after the decimal.
-        ;(format t "Employee 1 earns $~$ for ~D hours of work." paycheck1 hours1)
+        (format t "Employee 1 earns $~$ for ~D hours of work." paycheck1 hours1)
         (terpri)
-        ;(work e1 10)
-        ;(work e1 8)
-        ;(work e1 8)
-        ;(setq hours2 (employee-accumulated-hours e1))
-        ;(setq paycheck2 (pay e1))
-        ;(format t "Employee 1 earns $~$ for ~D hours of work." paycheck2 hours2)
+        (work e1 10)
+        (work e1 8)
+        (work e1 8)
+        (setq hours2 (employee-accumulated-hours e1))
+        (setq paycheck2 (pay e1))
+        (format t "Employee 1 earns $~$ for ~D hours of work." paycheck2 hours2)
         (terpri)
     
-        ;(setq e2 (make-employee :hourly-rate 15.10))
-        ;(work e2 8)
-        ;(work e2 10)
-        ;(work e2 10)
-        ;(work e2 6)
-        ;(work e2 6)
-        ;(setq hours3 (employee-accumulated-hours e2))
-        ;(setq paycheck3 (pay e2))
-        ;(format t "Employee 2 earns $~$ for ~D hours of work." paycheck3 hours3)
+        (setq e2 (make-employee :hourly-rate 15.10))
+        (work e2 8)
+        (work e2 10)
+        (work e2 10)
+        (work e2 6)
+        (work e2 6)
+        (setq hours3 (employee-accumulated-hours e2))
+        (setq paycheck3 (pay e2))
+        (format t "Employee 2 earns $~$ for ~D hours of work." paycheck3 hours3)
         (terpri) ) )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
